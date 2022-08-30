@@ -40,6 +40,11 @@ func (s *Server) singlePortProcessRequests() error {
 							SenderAnticipateEnabled: s.sendAEnable,
 						}, err)
 					}
+					if err != nil {
+						s.Lock()
+						delete(s.handlers, srcAddr.String())
+						s.Unlock()
+					}
 				}()
 			}
 		}
