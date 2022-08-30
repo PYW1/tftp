@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pin/tftp/v3/netascii"
+	"github.com/PYW1/tftp/v3/netascii"
 )
 
 // OutgoingTransfer provides methods to set the outgoing transfer size and
@@ -262,15 +262,15 @@ func (s *sender) sendDatagram(l int) (*net.UDPAddr, error) {
 
 func (s *sender) buildTransferStats() TransferStats {
 	return TransferStats{
-		RemoteAddr: s.addr.IP,
-		Filename:   s.filename,
-		Tid:        s.tid,
+		RemoteAddr:              s.addr.IP,
+		Filename:                s.filename,
+		Tid:                     s.tid,
 		SenderAnticipateEnabled: s.sendA.enabled,
-		Mode:           s.mode,
-		Opts:           s.opts,
-		Duration:       time.Now().Sub(s.startTime),
-		DatagramsSent:  s.datagramsSent,
-		DatagramsAcked: s.datagramsAcked,
+		Mode:                    s.mode,
+		Opts:                    s.opts,
+		Duration:                time.Now().Sub(s.startTime),
+		DatagramsSent:           s.datagramsSent,
+		DatagramsAcked:          s.datagramsAcked,
 	}
 }
 
