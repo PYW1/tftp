@@ -234,6 +234,8 @@ func (s *sender) sendDatagram(l int) (*net.UDPAddr, error) {
 			if p.block() == s.block {
 				s.datagramsAcked++
 				return addr, nil
+			} else {
+				return nil, fmt.Errorf("ack block no error")
 			}
 		case pOACK:
 			opts, err := unpackOACK(p)
