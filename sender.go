@@ -201,6 +201,10 @@ func (s *sender) sendWithRetry(l int) (*net.UDPAddr, error) {
 			s.retry.backoff()
 			continue
 		}
+		if _, ok := err.(TftpError); ok && s.retry.count() < s.retries {
+			s.retry.backoff()
+			continue
+		}
 		return addr, err
 	}
 }
@@ -235,7 +239,11 @@ func (s *sender) sendDatagram(l int) (*net.UDPAddr, error) {
 				s.datagramsAcked++
 				return addr, nil
 			} else {
-				return nil, fmt.Errorf("ack block no error")
+				err := &seqNoError{
+					expect:   s.block,
+					received: p.block(),
+				}
+				return nil, err
 			}
 		case pOACK:
 			opts, err := unpackOACK(p)
@@ -292,3 +300,21 @@ func (s *sender) abort(err error) error {
 	s.conn = nil
 	return nil
 }
+
+// An Error represents a tftp error.
+type TftpError interface {
+	error
+
+	Type() string
+}
+
+type seqNoError struct {
+	expect   uint16
+	received uint16
+}
+
+func (e *seqNoError) Error() string {
+	return fmt.Sprintf("seqno error expect %d, received: %d", +e.expect, e.received)
+}
+
+func (e *seqNoError) Type() string { return "seqno error" }
