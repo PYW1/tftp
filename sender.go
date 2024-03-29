@@ -238,13 +238,13 @@ func (s *sender) sendDatagram(l int) (*net.UDPAddr, error) {
 			if p.block() == s.block {
 				s.datagramsAcked++
 				return addr, nil
-			} else {
+			} /*else {
 				err := &seqNoError{
 					expect:   s.block,
 					received: p.block(),
 				}
 				return nil, err
-			}
+			}*/
 		case pOACK:
 			opts, err := unpackOACK(p)
 			if s.block != 0 {
